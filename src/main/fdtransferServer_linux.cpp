@@ -250,6 +250,7 @@ bool FdTransferServer::sendFd(int fd, struct fd_response *resp, size_t resp_size
 }
 
 bool FdTransferServer::runOnce(int pid, const char *path) {
+    printf("-------------fdtransferServer.runOnce--------------pid=%d, path=%s\n", pid, path);
     // get its nspid prior to moving to its PID namespace.
     int nspid;
     uid_t target_uid;

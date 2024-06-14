@@ -324,6 +324,7 @@ static int jps(const char* cmd, const char* app_name = NULL) {
 }
 
 static void run_fdtransfer(int pid, String& fdtransfer) {
+    printf("-------------main.run_fdtransfer--------------pid=%d, fdtransfer=%s\n", pid, fdtransfer.str());
     if (!FdTransferServer::supported() || fdtransfer == "") return;
 
     pid_t child = fork();
@@ -342,6 +343,7 @@ static void run_fdtransfer(int pid, String& fdtransfer) {
 }
 
 static void run_jattach(int pid, String& cmd) {
+    printf("-------------main.run_jattach--------------pid=%d, cmd=%s\n", pid, cmd.str());
     pid_t child = fork();
     if (child == -1) {
         error("fork failed", errno);
@@ -549,10 +551,11 @@ int main(int argc, const char** argv) {
 
     setup_output_files(pid);
     setup_lib_path();
-    printf("-------------main--------------action=%s\n", action.str());
+    printf("-------------main--------------action=%s\n", action.str()); // action=collect
     if (action == "collect") {
         run_fdtransfer(pid, fdtransfer);
-        run_jattach(pid, String("start,file=") << file << "," << output << format << params << ",log=" << logfile);
+        printf("-------------main->run_jattach--------------");
+        run_jattach(pid, String("start,file=") << file << "," << output << format << params << ",log=" << logfile); //
 
         fprintf(stderr, "Profiling for %d seconds\n", duration);
         end_time = time_micros() + duration * 1000000ULL;
@@ -571,7 +574,6 @@ int main(int argc, const char** argv) {
         fprintf(stderr, end_time != 0 ? "Done\n" : "Interrupted\n");
         signal(SIGINT, SIG_DFL);
         // Do not reset SIGTERM handler to allow graceful shutdown
-        printf("-------------main->run_jattach--------------action=%s\n", action.str());
         run_jattach(pid, String("stop,file=") << file << "," << output << format << ",log=" << logfile);
     } else {
         if (action == "start" || action == "resume") run_fdtransfer(pid, fdtransfer);
