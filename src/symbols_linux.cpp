@@ -589,11 +589,9 @@ void Symbols::parseKernelSymbols(CodeCache* cc) {
         return;
     }
     // TODO: Ilucky...Debug...
-    struct stat file_stat;
-    if (fstat(fd, &file_stat) == 0) {
-        char *file_name = file_stat.st_name;
-        printf("----------------symbols_linux.cpp.parseKernelSymbols--------------File name: %s\", file_name);
-    }
+    string fileName = getFileName(f);
+    printf("----------------symbols_linux.cpp.parseKernelSymbols--------------File name: %s\", fileName);
+
 
     char str[256];
     while (fgets(str, sizeof(str) - 8, f) != NULL) {
