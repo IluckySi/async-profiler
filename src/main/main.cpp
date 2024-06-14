@@ -393,11 +393,11 @@ static int get_tracepoint_id(const char* name) {
 
 int main(int argc, const char** argv) {
     printf("-------------main--------------\n");
-    printf("-------------main--------------jattach_action=%d, pid=%d\n", jattach_action, pid);
+    printf("-------------main--------------jattach_action=%d, pid=%d\n", jattach_action, pid); // jattach_action=0, pid=0
     Args args(argc, argv);
     while (args.count() > 0 && !(jattach_action && pid)) {
         String arg = args.next();
-        printf("-------------main--------------arg=%s\n", arg);
+        printf("-------------main--------------arg=%s\n", arg.str());
         if (arg == "start" || arg == "resume" || arg == "stop" || arg == "dump" || arg == "check" ||
             arg == "status" || arg == "meminfo" || arg == "list" || arg == "collect") {
             action = arg;
@@ -416,7 +416,7 @@ int main(int argc, const char** argv) {
 
         } else if (arg == "-d") {
             duration = atoi(args.next());
-            printf("-------------main---------------d=%d\n", duration);
+            printf("-------------main---------------d=%d\n", duration); // I: d=60
 
         } else if (arg == "-f") {
             file = args.next();
@@ -538,18 +538,18 @@ int main(int argc, const char** argv) {
         printf(USAGE_STRING);
         return 1;
     }
-    printf("-------------main--------------jattach_action=%d\n", jattach_action);
+    printf("-------------main--------------jattach_action=%d\n", jattach_action); // I: jattach_action=0
     if (jattach_action) {
         argc = args.count() + 1;
         argv = (const char**)alloca(argc * sizeof(char*));
         argv[0] = action.str();
         memcpy(&argv[1], args.array(), (argc - 1) * sizeof(char*));
-        return jattach(pid, argc, argv, 1);
+        return jattach(pid, argc, argv, 1); // TODO: Ilucky...
     }
 
     setup_output_files(pid);
     setup_lib_path();
-
+    printf("-------------main--------------action=%s\n", action);
     if (action == "collect") {
         run_fdtransfer(pid, fdtransfer);
         run_jattach(pid, String("start,file=") << file << "," << output << format << params << ",log=" << logfile);

@@ -115,7 +115,7 @@ static int write_command(int fd, int argc, char** argv) {
 
     const char* q = p < limit ? p : limit;
     for (p = buf; p < q; ) {
-        printf("-------------jattach_hotspot.write_command--------------p=%s\n", p);
+        printf("-------------jattach_hotspot.write_command--------------p=%s\n", p); // p=1
         ssize_t bytes = write(fd, p, q - p);
         if (bytes <= 0) {
             return -1;
@@ -151,7 +151,7 @@ static int read_response(int fd, int argc, char** argv, int print_output) {
         bytes = total;
         buf[bytes] = 0;
         // TODO: Ilucky...
-        printf("-------------jattach_hotspot.read_response--------------bytes: %zd\n", bytes);
+        printf("-------------jattach_hotspot.read_response--------------bytes: %s\n", bytes); // bytes: 17
         // Parse the return code of Agent_OnAttach
         if (result == 0 && bytes >= 2) {
             if (strncmp(buf + 2, "return code: ", 13) == 0) {
@@ -191,9 +191,9 @@ static int read_response(int fd, int argc, char** argv, int print_output) {
 }
 
 int jattach_hotspot(int pid, int nspid, int argc, char** argv, int print_output) {
-    printf("-------------jattach_hotspot.jattach_hotspot--------------pid=%d,nspid=%d,argc=%d,print_output=%d\n", pid, nspid, argc,print_output);
+    printf("-------------jattach_hotspot.jattach_hotspot--------------pid=%d,nspid=%d,argc=%d,print_output=%d\n", pid, nspid, argc,print_output); // pid=1190341,nspid=1190341,argc=4,print_output=0
     for (int i = 0; i < argc; i++) {
-        printf("-------------jattach_hotspot.jattach_hotspot--------------argv[%d]: %s\n", i, argv[i]);
+        printf("-------------jattach_hotspot.jattach_hotspot--------------argv[%d]: %s\n", i, argv[i]); // load /data/ilucky/async-profiler/async-profiler/build/bin/../lib/libasyncProfiler.so true start,file=/tmp/asprof.1191223.1190341,,log=/tmp/asprof-log.1191223.1190341
     }
     if (check_socket(nspid) != 0 && start_attach_mechanism(pid, nspid) != 0) {
         perror("Could not start attach mechanism");
@@ -201,7 +201,7 @@ int jattach_hotspot(int pid, int nspid, int argc, char** argv, int print_output)
     }
 
     int fd = connect_socket(nspid);
-    printf("-------------jattach_hotspot.jattach_hotspot--------------fd: %d\n", fd);
+    printf("-------------jattach_hotspot.jattach_hotspot--------------fd: %d\n", fd); // fd: 3
     if (fd == -1) {
         perror("Could not connect to socket");
         return 1;
@@ -211,13 +211,13 @@ int jattach_hotspot(int pid, int nspid, int argc, char** argv, int print_output)
         printf("Connected to remote JVM\n");
     }
 
-    if (write_command(fd, argc, argv) != 0) {
+    if (write_command(fd, argc, argv) != 0) { // TODO: Ilucky...
         perror("Error writing to socket");
         close(fd);
         return 1;
     }
 
-    int result = read_response(fd, argc, argv, print_output);
+    int result = read_response(fd, argc, argv, print_output); // TODO: Ilucky...
     close(fd);
 
     return result;

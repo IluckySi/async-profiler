@@ -19,9 +19,10 @@ int mnt_changed = 0;
 
 __attribute__((visibility("default")))
 int jattach(int pid, int argc, char** argv, int print_output) {
-    printf("-------------jattach.jattach--------------pid=%d,argc=%d,print_output=%d\n", pid, argc, print_output);
+    printf("-------------jattach.jattach--------------pid=%d,argc=%d,print_output=%d\n", pid, argc, print_output); // pid=1190341,argc=4,print_output=0
+    print_output = 1; // Ilucky: for debug...
     for (int i = 0; i < argc; i++) {
-        printf("-------------jattach.jattach--------------argv[%d]: %s\n", i, argv[i]);
+        printf("-------------jattach.jattach--------------argv[%d]: %s\n", i, argv[i]); // load /data/ilucky/async-profiler/async-profiler/build/bin/../lib/libasyncProfiler.so true start,file=/tmp/asprof.1191223.1190341,,log=/tmp/asprof-log.1191223.1190341
     }
     uid_t my_uid = geteuid();
     gid_t my_gid = getegid();
@@ -55,6 +56,7 @@ int jattach(int pid, int argc, char** argv, int print_output) {
     if (is_openj9_process(nspid)) {
         return jattach_openj9(pid, nspid, argc, argv, print_output);
     } else {
+        printf("-------------jattach.jattach->jattach_hotspot--------------\n");
         return jattach_hotspot(pid, nspid, argc, argv, print_output);
     }
 }
