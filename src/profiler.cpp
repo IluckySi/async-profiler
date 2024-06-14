@@ -1295,7 +1295,7 @@ Error Profiler::flushJfr() {
 }
 
 Error Profiler::dump(Writer& out, Arguments& args) {
-    printf("----------------Profiler.cpp.dump--------------\n");
+    printf("----------------Profiler.cpp.dump--------------\n"); // ----------------Profiler.cpp.dump--------------
     MutexLocker ml(_state_lock);
     if (_state != IDLE && _state != RUNNING) {
         return Error("Profiler has not started");
@@ -1317,6 +1317,7 @@ Error Profiler::dump(Writer& out, Arguments& args) {
             dumpFlameGraph(out, args, true);
             break;
         case OUTPUT_TEXT:
+            printf("----------------Profiler.cpp.dump->dumpText--------------\n");
             dumpText(out, args);
             break;
         case OUTPUT_JFR:
@@ -1469,7 +1470,7 @@ void Profiler::dumpFlameGraph(Writer& out, Arguments& args, bool tree) {
 }
 
 void Profiler::dumpText(Writer& out, Arguments& args) {
-    printf("----------------Profiler.cpp.dumpTest--------------\n");
+    printf("----------------Profiler.cpp.dumpText--------------\n"); // ----------------Profiler.cpp.dumpText--------------
     FrameName fn(args, args._style | STYLE_DOTTED, _epoch, _thread_names_lock, _thread_names);
     char buf[1024] = {0};
 
@@ -1660,7 +1661,7 @@ void Profiler::timerLoop(void* timer_id) {
 }
 
 Error Profiler::runInternal(Arguments& args, Writer& out) {
-    printf("----------------Profiler.cpp.runInternal--------------\n");
+    printf("----------------Profiler.cpp.runInternal--------------\n"); // ----------------Profiler.cpp.runInternal--------------
     switch (args._action) {
         case ACTION_START:
         case ACTION_RESUME: {
@@ -1683,6 +1684,7 @@ Error Profiler::runInternal(Arguments& args, Writer& out) {
             // Fall through
         }
         case ACTION_DUMP: {
+            printf("----------------Profiler.cpp.runInternal->dump--------------\n");
             Error error = dump(out, args);
             if (error) {
                 return error;
@@ -1744,9 +1746,9 @@ Error Profiler::runInternal(Arguments& args, Writer& out) {
     }
     return Error::OK;
 }
-
+// TODO: Ilucky...JVM进程中打印...
 Error Profiler::run(Arguments& args) {
-    printf("----------------Profiler.cpp.run--------------\n");
+    printf("----------------Profiler.cpp.run--------------\n"); // ----------------Profiler.cpp.run--------------
     if (!args.hasOutputFile()) {
         FileWriter out(STDOUT_FILENO);
         return runInternal(args, out);

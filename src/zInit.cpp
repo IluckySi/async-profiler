@@ -31,6 +31,7 @@ class LateInitializer {
     }
 
     void startProfiler(const char* command) {
+        printf("----------------zlnit.cpp.startProfiler--------------\n");
         Error error = _global_args.parse(command);
         _global_args._preloaded = true;
 

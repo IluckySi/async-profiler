@@ -307,6 +307,7 @@ void VM::loadAllMethodIDs(jvmtiEnv* jvmti, JNIEnv* jni) {
 }
 
 void JNICALL VM::VMInit(jvmtiEnv* jvmti, JNIEnv* jni, jthread thread) {
+    printf("----------------vmEntry.cpp.VMInit--------------\n");
     ready();
     loadAllMethodIDs(jvmti, jni);
 
@@ -388,7 +389,8 @@ Agent_OnLoad(JavaVM* vm, char* options, void* reserved) {
 
 extern "C" DLLEXPORT jint JNICALL
 Agent_OnAttach(JavaVM* vm, char* options, void* reserved) {
-    Arguments args;
+printf("----------------vmEntry.cpp.Agent_OnAttach--------------\n");
+Arguments args;
     Error error = args.parse(options);
 
     Log::open(args);
