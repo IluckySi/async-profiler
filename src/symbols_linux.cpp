@@ -567,7 +567,6 @@ Mutex Symbols::_parse_lock;
 bool Symbols::_have_kernel_symbols = false;
 static std::set<const void*> _parsed_libraries;
 static std::set<u64> _parsed_inodes;
-static std::string getFileName(FILE* file); //
 
 void Symbols::parseKernelSymbols(CodeCache* cc) {
     printf("----------------symbols_linux.cpp.parseKernelSymbols--------------cc->name()=%s, FdTransferClient::hasPeer()=%d\n", cc->name(), FdTransferClient::hasPeer()); // symbols_linux.cpp.parseKernelSymbols--------------FdTransferClient::hasPeer()=0
@@ -589,9 +588,6 @@ void Symbols::parseKernelSymbols(CodeCache* cc) {
         close(fd);
         return;
     }
-    // TODO: Ilucky...Debug...
-    char fileName[256]  = getFileName(f);
-    printf("----------------symbols_linux.cpp.parseKernelSymbols--------------File name: %s\n", fileName);
 
 
     char str[256];
