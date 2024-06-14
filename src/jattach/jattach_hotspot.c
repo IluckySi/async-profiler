@@ -151,7 +151,7 @@ static int read_response(int fd, int argc, char** argv, int print_output) {
         bytes = total;
         buf[bytes] = 0;
         // TODO: Ilucky...
-        printf("-------------jattach_hotspot.read_response--------------bytes: %s\n", bytes); // bytes: 17
+        // printf("-------------jattach_hotspot.read_response--------------bytes: %s\n", bytes); // bytes: 17
         // Parse the return code of Agent_OnAttach
         if (result == 0 && bytes >= 2) {
             if (strncmp(buf + 2, "return code: ", 13) == 0) {
