@@ -594,7 +594,7 @@ void Symbols::parseKernelSymbols(CodeCache* cc) {
     int il = 0;
     while (fgets(str, sizeof(str) - 8, f) != NULL) {
         if (il <=3) {
-            i++;
+            il++;
             printf("----------------symbols_linux.cpp.parseKernelSymbols--------------str: %s\n", str);
         }
         size_t len = strlen(str) - 1; // trim the '\n'
