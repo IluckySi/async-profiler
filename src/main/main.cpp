@@ -397,7 +397,7 @@ int main(int argc, const char** argv) {
     Args args(argc, argv);
     while (args.count() > 0 && !(jattach_action && pid)) {
         String arg = args.next();
-        printf("-------------main--------------arg=%s\n", arg.str());
+        printf("-------------main--------------arg=%s\n", arg.str()); // arg=-d arg=1190341
         if (arg == "start" || arg == "resume" || arg == "stop" || arg == "dump" || arg == "check" ||
             arg == "status" || arg == "meminfo" || arg == "list" || arg == "collect") {
             action = arg;
@@ -549,7 +549,7 @@ int main(int argc, const char** argv) {
 
     setup_output_files(pid);
     setup_lib_path();
-    printf("-------------main--------------action=%s\n", action);
+    printf("-------------main--------------action=%s\n", action.str());
     if (action == "collect") {
         run_fdtransfer(pid, fdtransfer);
         run_jattach(pid, String("start,file=") << file << "," << output << format << params << ",log=" << logfile);
@@ -571,7 +571,7 @@ int main(int argc, const char** argv) {
         fprintf(stderr, end_time != 0 ? "Done\n" : "Interrupted\n");
         signal(SIGINT, SIG_DFL);
         // Do not reset SIGTERM handler to allow graceful shutdown
-
+        printf("-------------main->run_jattach--------------action=%s\n", action.str());
         run_jattach(pid, String("stop,file=") << file << "," << output << format << ",log=" << logfile);
     } else {
         if (action == "start" || action == "resume") run_fdtransfer(pid, fdtransfer);
