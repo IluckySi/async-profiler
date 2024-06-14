@@ -19,6 +19,10 @@ int mnt_changed = 0;
 
 __attribute__((visibility("default")))
 int jattach(int pid, int argc, char** argv, int print_output) {
+    printf("-------------jattach.jattach--------------pid=%d,argc=%d,print_output=%d\n", pid, argc, print_output);
+    for (int i = 0; i < argc; i++) {
+        printf("-------------jattach.jattach--------------argv[%d]: %s\n", i, argv[i]);
+    }
     uid_t my_uid = geteuid();
     gid_t my_gid = getegid();
     uid_t target_uid = my_uid;

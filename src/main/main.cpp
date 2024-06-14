@@ -392,11 +392,12 @@ static int get_tracepoint_id(const char* name) {
 
 
 int main(int argc, const char** argv) {
-    printf("-------------main--------------");
+    printf("-------------main--------------\n");
+    printf("-------------main--------------jattach_action=%d, pid=%d\n", jattach_action, pid);
     Args args(argc, argv);
     while (args.count() > 0 && !(jattach_action && pid)) {
         String arg = args.next();
-
+        printf("-------------main--------------arg=%s\n", arg);
         if (arg == "start" || arg == "resume" || arg == "stop" || arg == "dump" || arg == "check" ||
             arg == "status" || arg == "meminfo" || arg == "list" || arg == "collect") {
             action = arg;
@@ -415,6 +416,7 @@ int main(int argc, const char** argv) {
 
         } else if (arg == "-d") {
             duration = atoi(args.next());
+            printf("-------------main---------------d=%d\n", duration);
 
         } else if (arg == "-f") {
             file = args.next();
@@ -536,7 +538,7 @@ int main(int argc, const char** argv) {
         printf(USAGE_STRING);
         return 1;
     }
-
+    printf("-------------main--------------jattach_action=%d\n", jattach_action);
     if (jattach_action) {
         argc = args.count() + 1;
         argv = (const char**)alloca(argc * sizeof(char*));

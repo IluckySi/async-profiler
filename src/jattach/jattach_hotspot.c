@@ -36,6 +36,7 @@ static uid_t get_file_owner(const char* path) {
 // Force remote JVM to start Attach listener.
 // HotSpot will start Attach listener in response to SIGQUIT if it sees .attach_pid file
 static int start_attach_mechanism(int pid, int nspid) {
+    printf("-------------jattach_hotspot.start_attach_mechanism--------------pid=%d,nspid=%d\n", pid, nspid);
     char path[MAX_PATH];
     snprintf(path, sizeof(path), "/proc/%d/cwd/.attach_pid%d", mnt_changed > 0 ? nspid : pid, nspid);
 
@@ -47,6 +48,7 @@ static int start_attach_mechanism(int pid, int nspid) {
 
         // Failed to create attach trigger in current directory. Retry in /tmp
         snprintf(path, sizeof(path), "%s/.attach_pid%d", tmp_path, nspid);
+        printf("-------------jattach_hotspot.start_attach_mechanism--------------path=%s\n", path);
         fd = creat(path, 0660);
         if (fd == -1) {
             return -1;
@@ -64,7 +66,7 @@ static int start_attach_mechanism(int pid, int nspid) {
         nanosleep(&ts, NULL);
         result = check_socket(nspid);
     } while (result != 0 && (ts.tv_nsec += 20000000) < 500000000);
-
+    printf("-------------jattach_hotspot.start_attach_mechanism--------------result=%d\n", result);
     unlink(path);
     return result;
 }
@@ -119,6 +121,7 @@ static int write_command(int fd, int argc, char** argv) {
         }
         p += (size_t)bytes;
     }
+    printf("-------------jattach_hotspot.write_command--------------p=%s\n", p);
     return 0;
 }
 
@@ -187,6 +190,10 @@ static int read_response(int fd, int argc, char** argv, int print_output) {
 }
 
 int jattach_hotspot(int pid, int nspid, int argc, char** argv, int print_output) {
+    printf("-------------jattach_hotspot.jattach_hotspot--------------pid=%d,nspid=%d,argc=%d,print_output=%d\n", pid, nspid, argc,print_output);
+    for (int i = 0; i < argc; i++) {
+        printf("-------------jattach_hotspot.jattach_hotspot--------------argv[%d]: %s\n", i, argv[i]);
+    }
     if (check_socket(nspid) != 0 && start_attach_mechanism(pid, nspid) != 0) {
         perror("Could not start attach mechanism");
         return 1;
