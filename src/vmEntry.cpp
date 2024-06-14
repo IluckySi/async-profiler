@@ -278,7 +278,8 @@ void VM::applyPatch(char* func, const char* patch, const char* end_patch) {
 
 void VM::loadMethodIDs(jvmtiEnv* jvmti, JNIEnv* jni, jclass klass) {
     int i = 0;
-    while (i <=3) {
+    while (true) {
+        if(i ==3 ) break;
         printf("----------------vmEntry.cpp.loadMethodIDs--------------\n");
         i=i+1;
     }
@@ -289,11 +290,11 @@ void VM::loadMethodIDs(jvmtiEnv* jvmti, JNIEnv* jni, jclass klass) {
         if (method_count > 0) {
             ClassLoaderData* cld = vmklass->classLoaderData();
             // TODO: Ilucky...
-            i = 0;
-            while (i <=3) {
-                printf("----------------vmEntry.cpp.loadMethodIDs--------------vmklass->name()->body()=%s\n", vmklass->name()->body());
-                i=i+1;
-            }
+//            i = 0;
+//            while (i <=3) {
+//                printf("----------------vmEntry.cpp.loadMethodIDs--------------vmklass->name()->body()=%s\n", vmklass->name()->body());
+//                i=i+1;
+//            }
 
             cld->lock();
             // Workaround for JVM bug: preallocate space for jmethodIDs
@@ -327,7 +328,7 @@ void VM::loadAllMethodIDs(jvmtiEnv* jvmti, JNIEnv* jni) {
 void JNICALL VM::VMInit(jvmtiEnv* jvmti, JNIEnv* jni, jthread thread) {
     printf("----------------vmEntry.cpp.VMInit--------------\n");
     ready();
-    loadAllMethodIDs(jvmti, jni);
+    loadAllMethodIDs(jvmti, jni); // TODO: Ilucky...
 
     // Allow profiler server only at JVM startup
     if (_global_args._server != NULL) {
