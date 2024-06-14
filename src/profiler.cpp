@@ -1669,7 +1669,7 @@ Error Profiler::runInternal(Arguments& args, Writer& out) {
             if (error) {
                 return error;
             }
-            out << "Profiling started\n";
+            out << "Profiling started\n"; // Profiling started
             break;
         }
         case ACTION_STOP: {
@@ -1749,7 +1749,7 @@ Error Profiler::runInternal(Arguments& args, Writer& out) {
 // TODO: Ilucky...JVM进程中打印...
 Error Profiler::run(Arguments& args) {
     printf("----------------Profiler.cpp.run--------------\n"); // ----------------Profiler.cpp.run--------------
-    args._output.get
+
     if (!args.hasOutputFile()) {
         printf("----------------Profiler.cpp.run--------------!args.hasOutputFile()=%d\n", !args.hasOutputFile());
         FileWriter out(STDOUT_FILENO);
