@@ -947,6 +947,7 @@ class Recording {
     }
 
     void writeNativeLibraries(Buffer* buf) {
+        printf("-----------------fightRecorder.cpp.writeNativeLibraries---------------\n");
         if (_recorded_lib_count < 0) return;
 
         Profiler* profiler = Profiler::instance();

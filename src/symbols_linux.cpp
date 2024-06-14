@@ -617,7 +617,29 @@ void Symbols::parseKernelSymbols(CodeCache* cc) {
 void Symbols::parseLibraries(CodeCacheArray* array, bool kernel_symbols) {
     printf("----------------symbols_linux.cpp.parseLibraries--------------kernel_symbols=%d\n", kernel_symbols); // kernel_symbols=1
     MutexLocker ml(_parse_lock);
+    // TODO: Ilucky...Debug...
     for(int i=0; i<array->count(); i++) {
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/jvm/java-21-openjdk-amd64/bin/java
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/jvm/java-21-openjdk-amd64/lib/libjsvml.so
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/data/ilucky/async-profiler/async-profiler/build/lib/libasyncProfiler.so
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/jvm/java-21-openjdk-amd64/lib/libextnet.so
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/jvm/java-21-openjdk-amd64/lib/libmanagement_ext.so
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/jvm/java-21-openjdk-amd64/lib/libverify.so
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/jvm/java-21-openjdk-amd64/lib/libzip.so
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.32
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/jvm/java-21-openjdk-amd64/lib/libnet.so
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/jvm/java-21-openjdk-amd64/lib/server/libjvm.so
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/jvm/java-21-openjdk-amd64/lib/libmanagement.so
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/jvm/java-21-openjdk-amd64/lib/libnio.so
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/jvm/java-21-openjdk-amd64/lib/libjava.so
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/x86_64-linux-gnu/libc.so.6
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/x86_64-linux-gnu/libm.so.6
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/jvm/java-21-openjdk-amd64/lib/libjli.so
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/x86_64-linux-gnu/libz.so.1.2.13
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/jvm/java-21-openjdk-amd64/lib/libjimage.so
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+//        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=[vdso]
         printf("----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=%s\n", array->operator[](i)->name());
     }
 
