@@ -569,7 +569,7 @@ static std::set<const void*> _parsed_libraries;
 static std::set<u64> _parsed_inodes;
 
 void Symbols::parseKernelSymbols(CodeCache* cc) {
-    printf("----------------symbols_linux.cpp.parseKernelSymbols--------------FdTransferClient::hasPeer()=%d\n", FdTransferClient::hasPeer()); // symbols_linux.cpp.parseKernelSymbols--------------FdTransferClient::hasPeer()=0
+    printf("----------------symbols_linux.cpp.parseKernelSymbols--------------c->name()=%s, FdTransferClient::hasPeer()=%d\n", c->name(), FdTransferClient::hasPeer()); // symbols_linux.cpp.parseKernelSymbols--------------FdTransferClient::hasPeer()=0
     int fd;
     if (FdTransferClient::hasPeer()) {
         fd = FdTransferClient::requestKallsymsFd();
@@ -588,9 +588,16 @@ void Symbols::parseKernelSymbols(CodeCache* cc) {
         close(fd);
         return;
     }
+    // TODO: Ilucky...Debug...
+    struct stat file_stat;
+    if (fstat(fd, &file_stat) == 0) {
+        char *file_name = file_stat.st_name;
+        printf("----------------symbols_linux.cpp.parseKernelSymbols--------------File name: %s\", file_name);
+    }
 
     char str[256];
     while (fgets(str, sizeof(str) - 8, f) != NULL) {
+         printf("----------------symbols_linux.cpp.parseKernelSymbols--------------str: %s\", str);
         size_t len = strlen(str) - 1; // trim the '\n'
         strcpy(str + len, "_[k]");
 
@@ -617,7 +624,7 @@ void Symbols::parseKernelSymbols(CodeCache* cc) {
 void Symbols::parseLibraries(CodeCacheArray* array, bool kernel_symbols) {
     printf("----------------symbols_linux.cpp.parseLibraries--------------kernel_symbols=%d\n", kernel_symbols); // kernel_symbols=1
     MutexLocker ml(_parse_lock);
-    // TODO: Ilucky...Debug...
+    // TODO: Ilucky...Debug...CodeCacheArray里面的数据是什么时候放进去的呢？？？
     for(int i=0; i<array->count(); i++) {
 //        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/jvm/java-21-openjdk-amd64/bin/java
 //        ----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=/usr/lib/jvm/java-21-openjdk-amd64/lib/libjsvml.so
