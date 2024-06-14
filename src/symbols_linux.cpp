@@ -617,6 +617,9 @@ void Symbols::parseKernelSymbols(CodeCache* cc) {
 void Symbols::parseLibraries(CodeCacheArray* array, bool kernel_symbols) {
     printf("----------------symbols_linux.cpp.parseLibraries--------------kernel_symbols=%d\n", kernel_symbols); // kernel_symbols=1
     MutexLocker ml(_parse_lock);
+    for(i=0; i<array.count(); i++) {
+        printf("----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=%s\n", array.operator[i].name());
+    }
 
     if (array->count() == 0) {
         // _CS_GNU_LIBC_VERSION is not defined on musl

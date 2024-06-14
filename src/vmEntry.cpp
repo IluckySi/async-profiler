@@ -131,17 +131,6 @@ bool VM::init(JavaVM* vm, bool attach) {
         libjvm = RTLD_DEFAULT;
     }
     printf("----------------vmEntry.cpp.init--------------libjvm=%p\n", libjvm); // libjvm=0x5f815910a920
-    char* strValue = static_cast<char*>(const_cast<char*>(libjvm));
-    printf("----------------vmEntry.cpp.init--------------libjvm=%s\n", strValue);
-
-    // TODO: Ilucky...Debug... 如下代码运行不通过...
-//    jvmtiProperties *system_properties;
-//    error = _jvmti->GetSystemProperties(&system_properties);
-//    char *key, *value;
-//    for (jint i = 0; i < system_properties->count; i++) {
-//        system_properties->GetProperty(i, &key, &value);
-//        printf("----------------vmEntry.cpp.init--------------GetSystemProperties: %s=%s\n", key, value);
-//    }
 
     // TODO: Ilucky...dlsym...
     _asyncGetCallTrace = (AsyncGetCallTrace)dlsym(libjvm, "AsyncGetCallTrace");
