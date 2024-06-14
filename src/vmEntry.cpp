@@ -277,12 +277,12 @@ void VM::applyPatch(char* func, const char* patch, const char* end_patch) {
 }
 
 void VM::loadMethodIDs(jvmtiEnv* jvmti, JNIEnv* jni, jclass klass) {
-    int i = 0;
-    while (true) {
-        if(i ==3 ) break;
-        printf("----------------vmEntry.cpp.loadMethodIDs--------------\n");
-        i=i+1;
-    }
+//    int i = 0;
+//    while (true) {
+//        if(i ==3 ) break;
+//        printf("----------------vmEntry.cpp.loadMethodIDs--------------\n");
+//        i=i+1;
+//    }
 
     if (VMStructs::hasClassLoaderData()) {
         VMKlass* vmklass = VMKlass::fromJavaClass(jni, klass);
