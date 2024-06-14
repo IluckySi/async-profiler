@@ -618,7 +618,7 @@ void Symbols::parseLibraries(CodeCacheArray* array, bool kernel_symbols) {
     printf("----------------symbols_linux.cpp.parseLibraries--------------kernel_symbols=%d\n", kernel_symbols); // kernel_symbols=1
     MutexLocker ml(_parse_lock);
     for(int i=0; i<array->count(); i++) {
-        printf("----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=%s\n", array->operator[](i).name());
+        printf("----------------symbols_linux.cpp.parseLibraries--------------array.operator[i].name()=%s\n", array->operator[](i)->name());
     }
 
     if (array->count() == 0) {
