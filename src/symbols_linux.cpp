@@ -569,7 +569,7 @@ static std::set<const void*> _parsed_libraries;
 static std::set<u64> _parsed_inodes;
 
 void Symbols::parseKernelSymbols(CodeCache* cc) {
-    printf("----------------symbols_linux.cpp.parseKernelSymbols--------------c->name()=%s, FdTransferClient::hasPeer()=%d\n", c->name(), FdTransferClient::hasPeer()); // symbols_linux.cpp.parseKernelSymbols--------------FdTransferClient::hasPeer()=0
+    printf("----------------symbols_linux.cpp.parseKernelSymbols--------------cc->name()=%s, FdTransferClient::hasPeer()=%d\n", cc->name(), FdTransferClient::hasPeer()); // symbols_linux.cpp.parseKernelSymbols--------------FdTransferClient::hasPeer()=0
     int fd;
     if (FdTransferClient::hasPeer()) {
         fd = FdTransferClient::requestKallsymsFd();
@@ -589,13 +589,13 @@ void Symbols::parseKernelSymbols(CodeCache* cc) {
         return;
     }
     // TODO: Ilucky...Debug...
-    string fileName = getFileName(f);
-    printf("----------------symbols_linux.cpp.parseKernelSymbols--------------File name: %s\", fileName);
+    char fileName[256]  = getFileName(f);
+    printf("----------------symbols_linux.cpp.parseKernelSymbols--------------File name: %s\n", fileName);
 
 
     char str[256];
     while (fgets(str, sizeof(str) - 8, f) != NULL) {
-         printf("----------------symbols_linux.cpp.parseKernelSymbols--------------str: %s\", str);
+         printf("----------------symbols_linux.cpp.parseKernelSymbols--------------str: %s\n", str);
         size_t len = strlen(str) - 1; // trim the '\n'
         strcpy(str + len, "_[k]");
 

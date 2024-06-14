@@ -149,7 +149,7 @@ build/$(CONVERTER_JAR): $(CONVERTER_SOURCES) $(RESOURCES)
 	$(RM) -r build/converter
 
 %.class: %.java
-	$(JAVAC) -source 7 -target 7 -Xlint:-options -g:none $^
+	$(JAVAC) -source 21 -target 21 -Xlint:-options -g:none $^
 
 test: all
 	test/smoke-test.sh
