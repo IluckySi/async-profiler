@@ -392,6 +392,7 @@ static int get_tracepoint_id(const char* name) {
 
 
 int main(int argc, const char** argv) {
+    printf("-------------main--------------")
     Args args(argc, argv);
     while (args.count() > 0 && !(jattach_action && pid)) {
         String arg = args.next();
