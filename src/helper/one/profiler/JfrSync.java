@@ -39,7 +39,7 @@ class JfrSync implements FlightRecorderListener {
     }
 
     public static void start(String fileName, String settings, int eventMask) throws IOException, ParseException {
-        System.out.println("----------------JfrSync.java.start----------------------------fileName:"+fileName);
+        // System.out.println("----------------JfrSync.java.start----------------------------fileName:"+fileName);
         Recording recording;
         if (settings.startsWith("+")) {
             recording = new Recording();
