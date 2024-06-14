@@ -569,7 +569,7 @@ static std::set<const void*> _parsed_libraries;
 static std::set<u64> _parsed_inodes;
 
 void Symbols::parseKernelSymbols(CodeCache* cc) {
-    printf("----------------symbols_linux.cpp.parseKernelSymbols--------------FdTransferClient::hasPeer()=%d\n", FdTransferClient::hasPeer());
+    printf("----------------symbols_linux.cpp.parseKernelSymbols--------------FdTransferClient::hasPeer()=%d\n", FdTransferClient::hasPeer()); // symbols_linux.cpp.parseKernelSymbols--------------FdTransferClient::hasPeer()=0
     int fd;
     if (FdTransferClient::hasPeer()) {
         fd = FdTransferClient::requestKallsymsFd();
@@ -615,7 +615,7 @@ void Symbols::parseKernelSymbols(CodeCache* cc) {
 }
 
 void Symbols::parseLibraries(CodeCacheArray* array, bool kernel_symbols) {
-    printf("----------------symbols_linux.cpp.parseLibraries--------------kernel_symbols=%d\n", kernel_symbols);
+    printf("----------------symbols_linux.cpp.parseLibraries--------------kernel_symbols=%d\n", kernel_symbols); // symbols_linux.cpp.parseLibraries--------------kernel_symbols=1
     MutexLocker ml(_parse_lock);
 
     if (array->count() == 0) {

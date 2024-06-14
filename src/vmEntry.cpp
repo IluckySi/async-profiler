@@ -80,9 +80,9 @@ static void* resolveMethodIdEnd() {
 bool VM::init(JavaVM* vm, bool attach) {
     printf("----------------vmEntry.cpp.init--------------attach=%d\n", attach);  // vmEntry.cpp.init--------------attach=1
     if (_jvmti != NULL) return true;
-
+    printf("----------------vmEntry.cpp.init--------------&vm=%p, _jvmti=%p\n", &vm, &_jvmti);
     _vm = vm;
-    if (_vm->GetEnv((void**)&_jvmti, JVMTI_VERSION_1_0) != 0) {
+    if (_vm->GetEnv((void**)&_jvmti, JVMTI_VERSION_1_0) != 0) { // TODO: Ilucky: _(void**)&_jvmti???
         return false;
     }
 
@@ -90,6 +90,7 @@ bool VM::init(JavaVM* vm, bool attach) {
     if (dladdr((const void*)resolveMethodId, &dl_info) && dl_info.dli_fname != NULL) {
         // Make sure async-profiler DSO cannot be unloaded, since it contains JVM callbacks.
         // Don't use ELF NODELETE flag because of https://sourceware.org/bugzilla/show_bug.cgi?id=20839
+        printf("----------------vmEntry.cpp.init--------------dl_info.dli_fname=%s\n", dl_info.dli_fname);
         dlopen(dl_info.dli_fname, RTLD_LAZY | RTLD_NODELETE);
     }
 
@@ -409,13 +410,13 @@ Agent_OnLoad(JavaVM* vm, char* options, void* reserved) {
 
 extern "C" DLLEXPORT jint JNICALL
 
-// TODO: Ilucky...
-//WARNING: A JVM TI agent has been loaded dynamically (/data/ilucky/async-profiler/async-profiler/build/bin/../lib/libasyncProfiler.so)
-//WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
-//WARNING: Dynamic loading of agents will be disallowed by default in a future release
+// TODO: Ilucky...JavaVM* vm参数指向Java虚拟机实例的指针。通过这个指针, 代理程序可以与Java虚拟机进行交互，比如创建Java对象、调用Java方法等操作。
+// 通过JavaVM* vm参数，代理程序可以访问Java虚拟机中的各种功能和资源
+// WARNING: A JVM TI agent has been loaded dynamically (/data/ilucky/async-profiler/async-profiler/build/bin/../lib/libasyncProfiler.so)
+// WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+// WARNING: Dynamic loading of agents will be disallowed by default in a future release
 Agent_OnAttach(JavaVM* vm, char* options, void* reserved) {
-printf("----------------vmEntry.cpp.Agent_OnAttach--------------\n"); // ----------------vmEntry.cpp.Agent_OnAttach--------------
-printf("----------------vmEntry.cpp.Agent_OnAttach--------------options=%s\n", options);
+    printf("----------------vmEntry.cpp.Agent_OnAttach--------------options=%s\n", options); // options=start,file=/tmp/asprof.1198997.1198901,,log=/tmp/asprof-log.1198997.1198901
 Arguments args;
     Error error = args.parse(options);
 
@@ -426,18 +427,19 @@ Arguments args;
         return ARGUMENTS_ERROR;
     }
 
-    if (!VM::init(vm, true)) {  // TODO: Ilucky...
+    if (!VM::init(vm, true)) {  // TODO: Ilucky...???
         Log::error("JVM does not support Tool Interface");
         return COMMAND_ERROR;
     }
 
-    error = Profiler::instance()->run(args);  // TODO: Ilucky...
+    error = Profiler::instance()->run(args);  // TODO: Ilucky...???
     if (error) {
         Log::error("%s", error.message());
         if (args.hasTemporaryLog()) Log::close();
         return COMMAND_ERROR;
     }
 
+    printf("----------------vmEntry.cpp.Agent_OnAttach--------------args._action=%d\n", args._action);
     if (args._action == ACTION_STOP && args.hasTemporaryLog()) {
         // The launcher immediately deletes logs after printing
         Log::close();
