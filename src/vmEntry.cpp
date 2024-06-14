@@ -280,7 +280,7 @@ void VM::loadMethodIDs(jvmtiEnv* jvmti, JNIEnv* jni, jclass klass) {
     int i = 0;
     while (i <=3) {
         printf("----------------vmEntry.cpp.loadMethodIDs--------------\n");
-        i++;
+        i=i+1;
     }
 
     if (VMStructs::hasClassLoaderData()) {
@@ -292,7 +292,7 @@ void VM::loadMethodIDs(jvmtiEnv* jvmti, JNIEnv* jni, jclass klass) {
             i = 0;
             while (i <=3) {
                 printf("----------------vmEntry.cpp.loadMethodIDs--------------vmklass->name()->body()=%s\n", vmklass->name()->body());
-                i++;
+                i=i+1;
             }
 
             cld->lock();
