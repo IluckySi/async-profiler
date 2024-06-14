@@ -78,6 +78,7 @@ static void* resolveMethodIdEnd() {
 
 
 bool VM::init(JavaVM* vm, bool attach) {
+    printf("----------------vmEntry.cpp.init--------------attach=%d\n", attach);
     if (_jvmti != NULL) return true;
 
     _vm = vm;
@@ -100,6 +101,7 @@ bool VM::init(JavaVM* vm, bool attach) {
                      strstr(prop, "HotSpot") != NULL ||
                      strstr(prop, "GraalVM") != NULL ||
                      strstr(prop, "Dynamic Code Evolution") != NULL;
+        printf("----------------vmEntry.cpp.init--------------is_hotspot=%d\n", is_hotspot);
         is_zero_vm = strstr(prop, "Zero") != NULL;
         _zing = !is_hotspot && strstr(prop, "Zing") != NULL;
         _jvmti->Deallocate((unsigned char*)prop);
@@ -115,6 +117,7 @@ bool VM::init(JavaVM* vm, bool attach) {
         } else if ((_hotspot_version = atoi(prop)) < 9) {
             _hotspot_version = 9;
         }
+        printf("----------------vmEntry.cpp.init--------------_hotspot_version=%d\n", _hotspot_version);
         _jvmti->Deallocate((unsigned char*)prop);
     }
 
@@ -130,7 +133,7 @@ bool VM::init(JavaVM* vm, bool attach) {
     _freeMemory = (JVM_MemoryFunc)dlsym(libjvm, "JVM_FreeMemory");
 
     Profiler* profiler = Profiler::instance();
-    profiler->updateSymbols(false);
+    profiler->updateSymbols(false); // TODO: Ilucky...
 
     _openj9 = !is_hotspot && J9Ext::initialize(_jvmti, profiler->resolveSymbol("j9thread_self"));
     _can_sample_objects = !is_hotspot || hotspot_version() >= 11;
@@ -142,7 +145,7 @@ bool VM::init(JavaVM* vm, bool attach) {
         return false;
     }
 
-    VMStructs::init(lib);
+    VMStructs::init(lib); // TODO: Ilucky...
     if (is_zero_vm) {
         lib->mark(isZeroInterpreterMethod, MARK_INTERPRETER);
     } else if (isOpenJ9()) {
@@ -181,7 +184,7 @@ bool VM::init(JavaVM* vm, bool attach) {
     capabilities.can_generate_monitor_events = 1;
     capabilities.can_generate_garbage_collection_events = 1;
     capabilities.can_tag_objects = 1;
-    if (_jvmti->AddCapabilities(&capabilities) != 0) {
+    if (_jvmti->AddCapabilities(&capabilities) != 0) {  // TODO: Ilucky...
         _can_sample_objects = false;
         capabilities.can_generate_sampled_object_alloc_events = 0;
         _jvmti->AddCapabilities(&capabilities);
@@ -233,7 +236,8 @@ bool VM::init(JavaVM* vm, bool attach) {
     }
 
     if (attach) {
-        loadAllMethodIDs(jvmti(), jni());
+        printf("----------------vmEntry.cpp.VMInit--------------attach=%d\n", attach);
+        loadAllMethodIDs(jvmti(), jni()); // TODO: Ilucky...
         _jvmti->GenerateEvents(JVMTI_EVENT_DYNAMIC_CODE_GENERATED);
         _jvmti->GenerateEvents(JVMTI_EVENT_COMPILED_METHOD_LOAD);
     } else {
@@ -273,11 +277,13 @@ void VM::applyPatch(char* func, const char* patch, const char* end_patch) {
 }
 
 void VM::loadMethodIDs(jvmtiEnv* jvmti, JNIEnv* jni, jclass klass) {
+    printf("----------------vmEntry.cpp.loadMethodIDs--------------\n");
     if (VMStructs::hasClassLoaderData()) {
         VMKlass* vmklass = VMKlass::fromJavaClass(jni, klass);
         int method_count = vmklass->methodCount();
         if (method_count > 0) {
             ClassLoaderData* cld = vmklass->classLoaderData();
+            printf("----------------vmEntry.cpp.loadMethodIDs--------------vmklass->name()->body()=%s\n", vmklass->name()->body());
             cld->lock();
             // Workaround for JVM bug: preallocate space for jmethodIDs
             // at the beginning of the list (rather than at the end)
@@ -296,6 +302,7 @@ void VM::loadMethodIDs(jvmtiEnv* jvmti, JNIEnv* jni, jclass klass) {
 }
 
 void VM::loadAllMethodIDs(jvmtiEnv* jvmti, JNIEnv* jni) {
+    printf("----------------vmEntry.cpp.loadAllMethodIDs--------------\n");
     jint class_count;
     jclass* classes;
     if (jvmti->GetLoadedClasses(&class_count, &classes) == 0) {
@@ -388,8 +395,14 @@ Agent_OnLoad(JavaVM* vm, char* options, void* reserved) {
 }
 
 extern "C" DLLEXPORT jint JNICALL
+
+// TODO: Ilucky...
+//WARNING: A JVM TI agent has been loaded dynamically (/data/ilucky/async-profiler/async-profiler/build/bin/../lib/libasyncProfiler.so)
+//WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+//WARNING: Dynamic loading of agents will be disallowed by default in a future release
 Agent_OnAttach(JavaVM* vm, char* options, void* reserved) {
-printf("----------------vmEntry.cpp.Agent_OnAttach--------------\n");
+printf("----------------vmEntry.cpp.Agent_OnAttach--------------\n"); // ----------------vmEntry.cpp.Agent_OnAttach--------------
+printf("----------------vmEntry.cpp.Agent_OnAttach--------------options=%s\n", options);
 Arguments args;
     Error error = args.parse(options);
 
@@ -400,12 +413,12 @@ Arguments args;
         return ARGUMENTS_ERROR;
     }
 
-    if (!VM::init(vm, true)) {
+    if (!VM::init(vm, true)) {  // TODO: Ilucky...
         Log::error("JVM does not support Tool Interface");
         return COMMAND_ERROR;
     }
 
-    error = Profiler::instance()->run(args);
+    error = Profiler::instance()->run(args);  // TODO: Ilucky...
     if (error) {
         Log::error("%s", error.message());
         if (args.hasTemporaryLog()) Log::close();

@@ -1317,7 +1317,7 @@ Error Profiler::dump(Writer& out, Arguments& args) {
             dumpFlameGraph(out, args, true);
             break;
         case OUTPUT_TEXT:
-            printf("----------------Profiler.cpp.dump->dumpText--------------\n");
+            printf("----------------Profiler.cpp.dump->dumpText--------------\n"); // ----------------Profiler.cpp.dump->dumpText--------------
             dumpText(out, args);
             break;
         case OUTPUT_JFR:
@@ -1684,7 +1684,7 @@ Error Profiler::runInternal(Arguments& args, Writer& out) {
             // Fall through
         }
         case ACTION_DUMP: {
-            printf("----------------Profiler.cpp.runInternal->dump--------------\n");
+            printf("----------------Profiler.cpp.runInternal->dump--------------\n"); // ----------------Profiler.cpp.runInternal->dump--------------
             Error error = dump(out, args);
             if (error) {
                 return error;
@@ -1749,7 +1749,9 @@ Error Profiler::runInternal(Arguments& args, Writer& out) {
 // TODO: Ilucky...JVM进程中打印...
 Error Profiler::run(Arguments& args) {
     printf("----------------Profiler.cpp.run--------------\n"); // ----------------Profiler.cpp.run--------------
+    args._output.get
     if (!args.hasOutputFile()) {
+        printf("----------------Profiler.cpp.run--------------!args.hasOutputFile()=%d\n", !args.hasOutputFile());
         FileWriter out(STDOUT_FILENO);
         return runInternal(args, out);
     } else {
