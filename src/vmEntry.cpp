@@ -130,7 +130,10 @@ bool VM::init(JavaVM* vm, bool attach) {
         Log::warn("Failed to load libjvm.so: %s", dlerror());
         libjvm = RTLD_DEFAULT;
     }
-    printf("----------------vmEntry.cpp.init--------------libjvm=%p\n", libjvm);
+    printf("----------------vmEntry.cpp.init--------------libjvm=%p\n", libjvm); // libjvm=0x5f815910a920
+    char* strValue = static_cast<char*>(const_cast<char*>(libjvm));
+    printf("----------------vmEntry.cpp.init--------------libjvm=%s\n", strValue);
+
     // TODO: Ilucky...Debug... 如下代码运行不通过...
 //    jvmtiProperties *system_properties;
 //    error = _jvmti->GetSystemProperties(&system_properties);
@@ -145,7 +148,7 @@ bool VM::init(JavaVM* vm, bool attach) {
     _getManagement = (JVM_GetManagement)dlsym(libjvm, "JVM_GetManagement");
     _totalMemory = (JVM_MemoryFunc)dlsym(libjvm, "JVM_TotalMemory");
     _freeMemory = (JVM_MemoryFunc)dlsym(libjvm, "JVM_FreeMemory");
-    printf("----------------vmEntry.cpp.init--------------&_asyncGetCallTrace=%p\n",&_asyncGetCallTrace);
+    printf("----------------vmEntry.cpp.init--------------&_asyncGetCallTrace=%p\n",&_asyncGetCallTrace); // &_asyncGetCallTrace=0x707ba00ccc98
 
 
     Profiler* profiler = Profiler::instance();
