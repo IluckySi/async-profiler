@@ -35,7 +35,8 @@ bool VM::_can_sample_objects = false;
 
 jvmtiError (JNICALL *VM::_orig_RedefineClasses)(jvmtiEnv*, jint, const jvmtiClassDefinition*);
 jvmtiError (JNICALL *VM::_orig_RetransformClasses)(jvmtiEnv*, jint, const jclass* classes);
-
+// TODO: Ilucky: AsyncGetCallTrace VM::_asyncGetCallTrace声明了一个静态变量_asyncGetCallTrace，它保存了AsyncGetCallTrace方法的引用。
+// 这个声明表明_asyncGetCallTrace是VM类的一个静态变量，可以在类的其他方法中访问和调用...
 AsyncGetCallTrace VM::_asyncGetCallTrace;
 JVM_GetManagement VM::_getManagement;
 JVM_MemoryFunc VM::_totalMemory;
@@ -130,20 +131,22 @@ bool VM::init(JavaVM* vm, bool attach) {
         libjvm = RTLD_DEFAULT;
     }
     printf("----------------vmEntry.cpp.init--------------libjvm=%p\n", libjvm);
-    // TODO: Ilucky...Debug...
-    jvmtiProperties *system_properties;
-    error = _jvmti->GetSystemProperties(&system_properties);
-    char *key, *value;
-    for (jint i = 0; i < system_properties->count; i++) {
-        system_properties->GetProperty(i, &key, &value);
-        printf("----------------vmEntry.cpp.init--------------GetSystemProperties: %s=%s\n", key, value);
-    }
+    // TODO: Ilucky...Debug... 如下代码运行不通过...
+//    jvmtiProperties *system_properties;
+//    error = _jvmti->GetSystemProperties(&system_properties);
+//    char *key, *value;
+//    for (jint i = 0; i < system_properties->count; i++) {
+//        system_properties->GetProperty(i, &key, &value);
+//        printf("----------------vmEntry.cpp.init--------------GetSystemProperties: %s=%s\n", key, value);
+//    }
 
-    // TODO: Ilucky...dlsym: 从libjvm中解析出对应方法的symbol？
+    // TODO: Ilucky...dlsym...
     _asyncGetCallTrace = (AsyncGetCallTrace)dlsym(libjvm, "AsyncGetCallTrace");
     _getManagement = (JVM_GetManagement)dlsym(libjvm, "JVM_GetManagement");
     _totalMemory = (JVM_MemoryFunc)dlsym(libjvm, "JVM_TotalMemory");
     _freeMemory = (JVM_MemoryFunc)dlsym(libjvm, "JVM_FreeMemory");
+    printf("----------------vmEntry.cpp.init--------------&_asyncGetCallTrace=%p\n",&_asyncGetCallTrace);
+
 
     Profiler* profiler = Profiler::instance();
     profiler->updateSymbols(false); // TODO: Ilucky...

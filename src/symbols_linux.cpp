@@ -615,7 +615,7 @@ void Symbols::parseKernelSymbols(CodeCache* cc) {
 }
 
 void Symbols::parseLibraries(CodeCacheArray* array, bool kernel_symbols) {
-    printf("----------------symbols_linux.cpp.parseLibraries--------------kernel_symbols=%d\n", kernel_symbols); // symbols_linux.cpp.parseLibraries--------------kernel_symbols=1
+    printf("----------------symbols_linux.cpp.parseLibraries--------------kernel_symbols=%d\n", kernel_symbols); // kernel_symbols=1
     MutexLocker ml(_parse_lock);
 
     if (array->count() == 0) {
