@@ -125,6 +125,7 @@ uintptr_t VMStructs::readSymbol(const char* symbol_name) {
 
 // Run at agent load time
 void VMStructs::init(CodeCache* libjvm) {
+    printf("----------------vmStructs.cpp.init--------------libjvm->name()=%s\n", libjvm->name());
     _libjvm = libjvm;
 
     if (!VM::isOpenJ9() && !VM::isZing()) {
@@ -144,6 +145,7 @@ void VMStructs::ready() {
 }
 
 void VMStructs::initOffsets() {
+    printf("----------------vmStructs.cpp.initOffsets--------------\n");
     uintptr_t entry = readSymbol("gHotSpotVMStructs");
     uintptr_t stride = readSymbol("gHotSpotVMStructEntryArrayStride");
     uintptr_t type_offset = readSymbol("gHotSpotVMStructEntryTypeNameOffset");

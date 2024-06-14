@@ -78,7 +78,7 @@ static void* resolveMethodIdEnd() {
 
 
 bool VM::init(JavaVM* vm, bool attach) {
-    printf("----------------vmEntry.cpp.init--------------attach=%d\n", attach);
+    printf("----------------vmEntry.cpp.init--------------attach=%d\n", attach);  // vmEntry.cpp.init--------------attach=1
     if (_jvmti != NULL) return true;
 
     _vm = vm;
@@ -101,7 +101,7 @@ bool VM::init(JavaVM* vm, bool attach) {
                      strstr(prop, "HotSpot") != NULL ||
                      strstr(prop, "GraalVM") != NULL ||
                      strstr(prop, "Dynamic Code Evolution") != NULL;
-        printf("----------------vmEntry.cpp.init--------------is_hotspot=%d\n", is_hotspot);
+        printf("----------------vmEntry.cpp.init--------------is_hotspot=%d\n", is_hotspot); // vmEntry.cpp.init--------------is_hotspot=1
         is_zero_vm = strstr(prop, "Zero") != NULL;
         _zing = !is_hotspot && strstr(prop, "Zing") != NULL;
         _jvmti->Deallocate((unsigned char*)prop);
@@ -117,7 +117,7 @@ bool VM::init(JavaVM* vm, bool attach) {
         } else if ((_hotspot_version = atoi(prop)) < 9) {
             _hotspot_version = 9;
         }
-        printf("----------------vmEntry.cpp.init--------------_hotspot_version=%d\n", _hotspot_version);
+        printf("----------------vmEntry.cpp.init--------------_hotspot_version=%d\n", _hotspot_version); // vmEntry.cpp.init--------------_hotspot_version=21
         _jvmti->Deallocate((unsigned char*)prop);
     }
 
@@ -127,6 +127,7 @@ bool VM::init(JavaVM* vm, bool attach) {
         Log::warn("Failed to load libjvm.so: %s", dlerror());
         libjvm = RTLD_DEFAULT;
     }
+    // TODO: Ilucky...dlsym: 从libjvm中解析出对应方法的symbol？
     _asyncGetCallTrace = (AsyncGetCallTrace)dlsym(libjvm, "AsyncGetCallTrace");
     _getManagement = (JVM_GetManagement)dlsym(libjvm, "JVM_GetManagement");
     _totalMemory = (JVM_MemoryFunc)dlsym(libjvm, "JVM_TotalMemory");

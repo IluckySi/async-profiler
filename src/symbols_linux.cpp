@@ -569,6 +569,7 @@ static std::set<const void*> _parsed_libraries;
 static std::set<u64> _parsed_inodes;
 
 void Symbols::parseKernelSymbols(CodeCache* cc) {
+    printf("----------------symbols_linux.cpp.parseKernelSymbols--------------FdTransferClient::hasPeer()=%d\n", FdTransferClient::hasPeer());
     int fd;
     if (FdTransferClient::hasPeer()) {
         fd = FdTransferClient::requestKallsymsFd();
@@ -614,6 +615,7 @@ void Symbols::parseKernelSymbols(CodeCache* cc) {
 }
 
 void Symbols::parseLibraries(CodeCacheArray* array, bool kernel_symbols) {
+    printf("----------------symbols_linux.cpp.parseLibraries--------------kernel_symbols=%d\n", kernel_symbols);
     MutexLocker ml(_parse_lock);
 
     if (array->count() == 0) {
@@ -623,7 +625,7 @@ void Symbols::parseLibraries(CodeCacheArray* array, bool kernel_symbols) {
 
     if (kernel_symbols && !haveKernelSymbols()) {
         CodeCache* cc = new CodeCache("[kernel]");
-        parseKernelSymbols(cc);
+        parseKernelSymbols(cc); // TODO: Ilucky...
 
         if (haveKernelSymbols()) {
             cc->sort();
@@ -682,7 +684,7 @@ void Symbols::parseLibraries(CodeCacheArray* array, bool kernel_symbols) {
             break;
         }
 
-        cc = new CodeCache(map.file(), count, false, map_start, map_end);
+        cc = new CodeCache(map.file(), count, false, map_start, map_end);  // TODO: Ilucky...map_start, map_end...
         cc_inode = inode;
 
         if (strchr(map.file(), ':') != NULL) {
