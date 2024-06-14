@@ -115,13 +115,13 @@ static int write_command(int fd, int argc, char** argv) {
 
     const char* q = p < limit ? p : limit;
     for (p = buf; p < q; ) {
+        printf("-------------jattach_hotspot.write_command--------------p=%s\n", p);
         ssize_t bytes = write(fd, p, q - p);
         if (bytes <= 0) {
             return -1;
         }
         p += (size_t)bytes;
     }
-    printf("-------------jattach_hotspot.write_command--------------p=%s\n", p);
     return 0;
 }
 
@@ -150,7 +150,8 @@ static int read_response(int fd, int argc, char** argv, int print_output) {
         }
         bytes = total;
         buf[bytes] = 0;
-
+        // TODO: Ilucky...
+        printf("-------------jattach_hotspot.read_response--------------bytes: %zd\n", bytes);
         // Parse the return code of Agent_OnAttach
         if (result == 0 && bytes >= 2) {
             if (strncmp(buf + 2, "return code: ", 13) == 0) {
@@ -200,6 +201,7 @@ int jattach_hotspot(int pid, int nspid, int argc, char** argv, int print_output)
     }
 
     int fd = connect_socket(nspid);
+    printf("-------------jattach_hotspot.jattach_hotspot--------------fd: %d\n", fd);
     if (fd == -1) {
         perror("Could not connect to socket");
         return 1;
