@@ -277,13 +277,24 @@ void VM::applyPatch(char* func, const char* patch, const char* end_patch) {
 }
 
 void VM::loadMethodIDs(jvmtiEnv* jvmti, JNIEnv* jni, jclass klass) {
-    printf("----------------vmEntry.cpp.loadMethodIDs--------------\n");
+    int i = 0;
+    while (i <=3) {
+        printf("----------------vmEntry.cpp.loadMethodIDs--------------\n");
+        i++;
+    }
+
     if (VMStructs::hasClassLoaderData()) {
         VMKlass* vmklass = VMKlass::fromJavaClass(jni, klass);
         int method_count = vmklass->methodCount();
         if (method_count > 0) {
             ClassLoaderData* cld = vmklass->classLoaderData();
-            printf("----------------vmEntry.cpp.loadMethodIDs--------------vmklass->name()->body()=%s\n", vmklass->name()->body());
+            // TODO: Ilucky...
+            i = 0;
+            while (i <=3) {
+                printf("----------------vmEntry.cpp.loadMethodIDs--------------vmklass->name()->body()=%s\n", vmklass->name()->body());
+                i++;
+            }
+
             cld->lock();
             // Workaround for JVM bug: preallocate space for jmethodIDs
             // at the beginning of the list (rather than at the end)
