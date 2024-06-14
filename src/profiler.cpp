@@ -1726,7 +1726,7 @@ Error Profiler::runInternal(Arguments& args, Writer& out) {
                 out << "Perf events:\n";
                 // The first perf event is "cpu" which is already printed
                 for (int event_id = 1; ; event_id++) {
-                    const char = PerfEvents::getEventName(event_id);
+                    const char* event_name = PerfEvents::getEventName(event_id);
                     if (event_name == NULL) break;
                     out << "  " << event_name << "\n";
                 }
