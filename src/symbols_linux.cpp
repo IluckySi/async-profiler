@@ -591,8 +591,12 @@ void Symbols::parseKernelSymbols(CodeCache* cc) {
 
 
     char str[256];
+    int il = 0;
     while (fgets(str, sizeof(str) - 8, f) != NULL) {
-         printf("----------------symbols_linux.cpp.parseKernelSymbols--------------str: %s\n", str);
+        if (il <=3) {
+            i++;
+            printf("----------------symbols_linux.cpp.parseKernelSymbols--------------str: %s\n", str);
+        }
         size_t len = strlen(str) - 1; // trim the '\n'
         strcpy(str + len, "_[k]");
 
