@@ -78,9 +78,10 @@ static void* resolveMethodIdEnd() {
 
 
 bool VM::init(JavaVM* vm, bool attach) {
-    printf("----------------vmEntry.cpp.init--------------attach=%d\n", attach);  // vmEntry.cpp.init--------------attach=1
+    printf("----------------vmEntry.cpp.init--------------attach=%d\n", attach);  // attach=1
     if (_jvmti != NULL) return true;
-    printf("----------------vmEntry.cpp.init--------------&vm=%p, _jvmti=%p\n", &vm, &_jvmti);
+    printf("----------------vmEntry.cpp.init--------------&vm=%p, _jvmti=%p\n", &vm, &_jvmti); // &vm=0x732f4a82d8a8, _jvmti=0x732f48f1dcb8
+
     _vm = vm;
     if (_vm->GetEnv((void**)&_jvmti, JVMTI_VERSION_1_0) != 0) { // TODO: Ilucky: _(void**)&_jvmti???
         return false;
@@ -90,7 +91,7 @@ bool VM::init(JavaVM* vm, bool attach) {
     if (dladdr((const void*)resolveMethodId, &dl_info) && dl_info.dli_fname != NULL) {
         // Make sure async-profiler DSO cannot be unloaded, since it contains JVM callbacks.
         // Don't use ELF NODELETE flag because of https://sourceware.org/bugzilla/show_bug.cgi?id=20839
-        printf("----------------vmEntry.cpp.init--------------dl_info.dli_fname=%s\n", dl_info.dli_fname);
+        printf("----------------vmEntry.cpp.init--------------dl_info.dli_fname=%s\n", dl_info.dli_fname); // dl_info.dli_fname=/data/ilucky/async-profiler/async-profiler/build/bin/../lib/libasyncProfiler.so
         dlopen(dl_info.dli_fname, RTLD_LAZY | RTLD_NODELETE);
     }
 
@@ -102,7 +103,7 @@ bool VM::init(JavaVM* vm, bool attach) {
                      strstr(prop, "HotSpot") != NULL ||
                      strstr(prop, "GraalVM") != NULL ||
                      strstr(prop, "Dynamic Code Evolution") != NULL;
-        printf("----------------vmEntry.cpp.init--------------is_hotspot=%d\n", is_hotspot); // vmEntry.cpp.init--------------is_hotspot=1
+        printf("----------------vmEntry.cpp.init--------------is_hotspot=%d\n", is_hotspot); // is_hotspot=1
         is_zero_vm = strstr(prop, "Zero") != NULL;
         _zing = !is_hotspot && strstr(prop, "Zing") != NULL;
         _jvmti->Deallocate((unsigned char*)prop);
@@ -118,7 +119,7 @@ bool VM::init(JavaVM* vm, bool attach) {
         } else if ((_hotspot_version = atoi(prop)) < 9) {
             _hotspot_version = 9;
         }
-        printf("----------------vmEntry.cpp.init--------------_hotspot_version=%d\n", _hotspot_version); // vmEntry.cpp.init--------------_hotspot_version=21
+        printf("----------------vmEntry.cpp.init--------------_hotspot_version=%d\n", _hotspot_version); // _hotspot_version=21
         _jvmti->Deallocate((unsigned char*)prop);
     }
 
@@ -128,6 +129,17 @@ bool VM::init(JavaVM* vm, bool attach) {
         Log::warn("Failed to load libjvm.so: %s", dlerror());
         libjvm = RTLD_DEFAULT;
     }
+    printf("----------------vmEntry.cpp.init--------------libjvm=%p\n", libjvm);
+    // TODO: Ilucky...Debug...
+    error = _jvmti->GetSystemProperties(&system_properties);
+    char *key, *value;
+    for (jint i = 0; i < system_properties->count; i++) {
+        error = system_properties->GetProperty(i, &key, &value);
+        if (error == JVMTI_ERROR_NONE) {
+            printf("----------------vmEntry.cpp.init--------------GetSystemProperties: %s=%s\n", key, value);
+        }
+    }
+
     // TODO: Ilucky...dlsym: 从libjvm中解析出对应方法的symbol？
     _asyncGetCallTrace = (AsyncGetCallTrace)dlsym(libjvm, "AsyncGetCallTrace");
     _getManagement = (JVM_GetManagement)dlsym(libjvm, "JVM_GetManagement");
