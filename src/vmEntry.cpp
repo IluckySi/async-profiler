@@ -131,13 +131,12 @@ bool VM::init(JavaVM* vm, bool attach) {
     }
     printf("----------------vmEntry.cpp.init--------------libjvm=%p\n", libjvm);
     // TODO: Ilucky...Debug...
+    jvmtiProperties *system_properties;
     error = _jvmti->GetSystemProperties(&system_properties);
     char *key, *value;
     for (jint i = 0; i < system_properties->count; i++) {
-        error = system_properties->GetProperty(i, &key, &value);
-        if (error == JVMTI_ERROR_NONE) {
-            printf("----------------vmEntry.cpp.init--------------GetSystemProperties: %s=%s\n", key, value);
-        }
+        system_properties->GetProperty(i, &key, &value);
+        printf("----------------vmEntry.cpp.init--------------GetSystemProperties: %s=%s\n", key, value);
     }
 
     // TODO: Ilucky...dlsym: 从libjvm中解析出对应方法的symbol？
