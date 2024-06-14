@@ -22,6 +22,7 @@ DLLEXPORT const char* asprof_error_str(asprof_error_t err) {
 }
 
 DLLEXPORT asprof_error_t asprof_execute(const char* command, asprof_writer_t output_callback) {
+    printf("----------------javaApi.cpp.asprof_execute--------------\n");
     Arguments args;
     Error error = args.parse(command);
     if (error) {

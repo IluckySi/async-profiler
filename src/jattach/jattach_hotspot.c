@@ -36,7 +36,7 @@ static uid_t get_file_owner(const char* path) {
 // Force remote JVM to start Attach listener.
 // HotSpot will start Attach listener in response to SIGQUIT if it sees .attach_pid file
 static int start_attach_mechanism(int pid, int nspid) {
-    printf("-------------jattach_hotspot.start_attach_mechanism--------------pid=%d,nspid=%d\n", pid, nspid);
+    printf("-------------jattach_hotspot.start_attach_mechanism--------------pid=%d,nspid=%d\n", pid, nspid); // pid=1192332,nspid=1192332
     char path[MAX_PATH];
     snprintf(path, sizeof(path), "/proc/%d/cwd/.attach_pid%d", mnt_changed > 0 ? nspid : pid, nspid);
 
@@ -66,7 +66,7 @@ static int start_attach_mechanism(int pid, int nspid) {
         nanosleep(&ts, NULL);
         result = check_socket(nspid);
     } while (result != 0 && (ts.tv_nsec += 20000000) < 500000000);
-    printf("-------------jattach_hotspot.start_attach_mechanism--------------result=%d\n", result);
+    printf("-------------jattach_hotspot.start_attach_mechanism--------------result=%d\n", result);// result=0
     unlink(path);
     return result;
 }
@@ -195,7 +195,7 @@ int jattach_hotspot(int pid, int nspid, int argc, char** argv, int print_output)
     for (int i = 0; i < argc; i++) {
         printf("-------------jattach_hotspot.jattach_hotspot--------------argv[%d]: %s\n", i, argv[i]); // load /data/ilucky/async-profiler/async-profiler/build/bin/../lib/libasyncProfiler.so true start,file=/tmp/asprof.1191223.1190341,,log=/tmp/asprof-log.1191223.1190341
     }
-    if (check_socket(nspid) != 0 && start_attach_mechanism(pid, nspid) != 0) {
+    if (check_socket(nspid) != 0 && start_attach_mechanism(pid, nspid) != 0) { // TODO: ilucky...
         perror("Could not start attach mechanism");
         return 1;
     }

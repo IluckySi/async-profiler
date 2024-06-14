@@ -343,7 +343,7 @@ static void run_fdtransfer(int pid, String& fdtransfer) {
 }
 
 static void run_jattach(int pid, String& cmd) {
-    printf("-------------main.run_jattach--------------pid=%d, cmd=%s\n", pid, cmd.str());
+    printf("-------------main.run_jattach--------------pid=%d, cmd=%s\n", pid, cmd.str()); // pid=1192332, cmd=start,file=/tmp/asprof.1192417.1192332,,log=/tmp/asprof-log.1192417.1192332
     pid_t child = fork();
     if (child == -1) {
         error("fork failed", errno);
@@ -351,7 +351,7 @@ static void run_jattach(int pid, String& cmd) {
 
     if (child == 0) {
         const char* argv[] = {"load", libpath.str(), libpath.str()[0] == '/' ? "true" : "false", cmd.str()};
-        exit(jattach(pid, 4, argv, 0));
+        exit(jattach(pid, 4, argv, 0)); // TODO： Ilucky...
     } else {
         int ret = wait_for_exit(child);
         if (ret != 0) {
@@ -554,7 +554,7 @@ int main(int argc, const char** argv) {
     printf("-------------main--------------action=%s\n", action.str()); // action=collect
     if (action == "collect") {
         run_fdtransfer(pid, fdtransfer);
-        printf("-------------main->run_jattach--------------");
+        printf("-------------main->run_jattach--------------\n");
         run_jattach(pid, String("start,file=") << file << "," << output << format << params << ",log=" << logfile); //
 
         fprintf(stderr, "Profiling for %d seconds\n", duration);

@@ -1295,6 +1295,7 @@ Error Profiler::flushJfr() {
 }
 
 Error Profiler::dump(Writer& out, Arguments& args) {
+    printf("----------------Profiler.cpp.dump--------------\n");
     MutexLocker ml(_state_lock);
     if (_state != IDLE && _state != RUNNING) {
         return Error("Profiler has not started");
@@ -1468,6 +1469,7 @@ void Profiler::dumpFlameGraph(Writer& out, Arguments& args, bool tree) {
 }
 
 void Profiler::dumpText(Writer& out, Arguments& args) {
+    printf("----------------Profiler.cpp.dumpTest--------------\n");
     FrameName fn(args, args._style | STYLE_DOTTED, _epoch, _thread_names_lock, _thread_names);
     char buf[1024] = {0};
 
@@ -1658,6 +1660,7 @@ void Profiler::timerLoop(void* timer_id) {
 }
 
 Error Profiler::runInternal(Arguments& args, Writer& out) {
+    printf("----------------Profiler.cpp.runInternal--------------\n");
     switch (args._action) {
         case ACTION_START:
         case ACTION_RESUME: {
@@ -1743,6 +1746,7 @@ Error Profiler::runInternal(Arguments& args, Writer& out) {
 }
 
 Error Profiler::run(Arguments& args) {
+    printf("----------------Profiler.cpp.run--------------\n");
     if (!args.hasOutputFile()) {
         FileWriter out(STDOUT_FILENO);
         return runInternal(args, out);

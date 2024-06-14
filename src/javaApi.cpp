@@ -57,6 +57,7 @@ Java_one_profiler_AsyncProfiler_stop0(JNIEnv* env, jobject unused) {
 extern "C" DLLEXPORT jstring JNICALL
 Java_one_profiler_AsyncProfiler_execute0(JNIEnv* env, jobject unused, jstring command) {
     Arguments args;
+    printf("----------------javaApi.cpp.Java_one_profiler_AsyncProfiler_execute0--------------\n");
     const char* command_str = env->GetStringUTFChars(command, NULL);
     Error error = args.parse(command_str);
     env->ReleaseStringUTFChars(command, command_str);
