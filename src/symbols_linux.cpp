@@ -569,7 +569,7 @@ static std::set<const void*> _parsed_libraries;
 static std::set<u64> _parsed_inodes;
 
 void Symbols::parseKernelSymbols(CodeCache* cc) {
-    printf("----------------symbols_linux.cpp.parseKernelSymbols--------------cc->name()=%s, FdTransferClient::hasPeer()=%d\n", cc->name(), FdTransferClient::hasPeer()); // symbols_linux.cpp.parseKernelSymbols--------------FdTransferClient::hasPeer()=0
+    printf("----------------symbols_linux.cpp.parseKernelSymbols--------------cc->name()=%s, FdTransferClient::hasPeer()=%d\n", cc->name(), FdTransferClient::hasPeer()); // cc->name()=[kernel], FdTransferClient::hasPeer()=0
     int fd;
     if (FdTransferClient::hasPeer()) {
         fd = FdTransferClient::requestKallsymsFd();
@@ -592,9 +592,13 @@ void Symbols::parseKernelSymbols(CodeCache* cc) {
 
     char str[256];
     int il = 0;
-    while (fgets(str, sizeof(str) - 8, f) != NULL) {
+    while (fgets(str, sizeof(str) - 8, f) != NULL) {  // fget方法->读取f文件内容...
         if (il <=3) {
             il++;
+//            ----------------symbols_linux.cpp.parseKernelSymbols--------------str: 0000000000000000 A fixed_percpu_data
+//            ----------------symbols_linux.cpp.parseKernelSymbols--------------str: 0000000000000000 A __per_cpu_start
+//            ----------------symbols_linux.cpp.parseKernelSymbols--------------str: 0000000000001000 A cpu_debug_store
+//            ----------------symbols_linux.cpp.parseKernelSymbols--------------str: 0000000000002000 A irq_stack_backing_store
             printf("----------------symbols_linux.cpp.parseKernelSymbols--------------str: %s\n", str);
         }
         size_t len = strlen(str) - 1; // trim the '\n'
@@ -656,7 +660,7 @@ void Symbols::parseLibraries(CodeCacheArray* array, bool kernel_symbols) {
 
     if (kernel_symbols && !haveKernelSymbols()) {
         CodeCache* cc = new CodeCache("[kernel]");
-        parseKernelSymbols(cc); // TODO: Ilucky...
+        parseKernelSymbols(cc); // TODO: Ilucky...解析内核符号表.
 
         if (haveKernelSymbols()) {
             cc->sort();
@@ -665,7 +669,8 @@ void Symbols::parseLibraries(CodeCacheArray* array, bool kernel_symbols) {
             delete cc;
         }
     }
-
+    // Ilucky: /proc/self/maps保存的是当前进程的内存映射情况，包括了进程的虚拟地址空间的映射范围、权限以及对应的文件路径等信息。
+    // 通过读取该文件可以查看当前进程的内存使用情况。
     FILE* f = fopen("/proc/self/maps", "r");
     if (f == NULL) {
         return;
@@ -679,7 +684,8 @@ void Symbols::parseLibraries(CodeCacheArray* array, bool kernel_symbols) {
     size_t str_size = 0;
     ssize_t len;
 
-    while ((len = getline(&str, &str_size, f)) > 0) {
+    int il = 0; // for debug
+    while ((len = getline(&str, &str_size, f)) > 0) {  // 逐行读取/proc/self/maps文件
         str[len - 1] = 0;
 
         MemoryMapDesc map(str);
@@ -715,12 +721,17 @@ void Symbols::parseLibraries(CodeCacheArray* array, bool kernel_symbols) {
             break;
         }
 
+        if(il <= 3) {
+            il++;
+            printf("----------------symbols_linux.cpp.parseLibraries--------------map.file=%s,map_start=%s,map_end=%s",map.file(), map_start, map_end);
+        }
         cc = new CodeCache(map.file(), count, false, map_start, map_end);  // TODO: Ilucky...map_start, map_end...
         cc_inode = inode;
 
         if (strchr(map.file(), ':') != NULL) {
             // Do not try to parse pseudofiles like anon_inode:name, /memfd:name
         } else if (inode != 0) {
+             printf("----------------symbols_linux.cpp.parseLibraries-------------- inode == last_inode=%d", inode == last_inode);
             if (inode == last_inode) {
                 // If last_inode is set, image_base is known to be valid and readable
                 ElfParser::parseFile(cc, image_base, map.file(), true);
