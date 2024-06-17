@@ -250,6 +250,7 @@ ElfSection* ElfParser::findSection(uint32_t type, const char* name) {
 }
 
 ElfProgramHeader* ElfParser::findProgramHeader(uint32_t type) {
+    printf("----------------symbols_linux.cpp.findProgramHeader--------------\n");
     const char* pheaders = (const char*)_header + _header->e_phoff;
 
     for (int i = 0; i < _header->e_phnum; i++) {
@@ -263,6 +264,7 @@ ElfProgramHeader* ElfParser::findProgramHeader(uint32_t type) {
 }
 
 bool ElfParser::parseFile(CodeCache* cc, const char* base, const char* file_name, bool use_debug) {
+    printf("----------------symbols_linux.cpp.parseFile--------------base=%s, file_name=%s, use_debug=%d\n",base,file_name,use_debug);
     int fd = open(file_name, O_RDONLY);
     if (fd == -1) {
         return false;
@@ -723,7 +725,7 @@ void Symbols::parseLibraries(CodeCacheArray* array, bool kernel_symbols) {
 
         if(il <= 3) {
             il++;
-            printf("----------------symbols_linux.cpp.parseLibraries--------------map.file=%s,map_start=%s,map_end=%s",map.file(), map_start, map_end);
+            printf("----------------symbols_linux.cpp.parseLibraries--------------map.file=%s,map_start=%s,map_end=%s\n",map.file(), map_start, map_end); // map.file=/data/ilucky/async-profiler/async-profiler/build/lib/libasyncProfiler.so,map_start=��H�H���,map_end=<!DOCTYPE html> <html lang='en'> <head>......
         }
         cc = new CodeCache(map.file(), count, false, map_start, map_end);  // TODO: Ilucky...map_start, map_end...
         cc_inode = inode;
@@ -731,7 +733,7 @@ void Symbols::parseLibraries(CodeCacheArray* array, bool kernel_symbols) {
         if (strchr(map.file(), ':') != NULL) {
             // Do not try to parse pseudofiles like anon_inode:name, /memfd:name
         } else if (inode != 0) {
-             printf("----------------symbols_linux.cpp.parseLibraries-------------- inode == last_inode=%d", inode == last_inode);
+             printf("----------------symbols_linux.cpp.parseLibraries-------------- inode == last_inode=%d\n", inode == last_inode);
             if (inode == last_inode) {
                 // If last_inode is set, image_base is known to be valid and readable
                 ElfParser::parseFile(cc, image_base, map.file(), true);

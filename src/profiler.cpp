@@ -372,6 +372,7 @@ int Profiler::convertNativeTrace(int native_frames, const void** callchain, ASGC
 }
 
 int Profiler::getJavaTraceAsync(void* ucontext, ASGCT_CallFrame* frames, int max_depth, StackContext* java_ctx) {
+    printf("----------------profiler.cpp.getJavaTraceAsync-------------\n");
     // Workaround for JDK-8132510: it's not safe to call GetEnv() inside a signal handler
     // since JDK 9, so we do it only for threads already registered in ThreadLocalStorage
     VMThread* vm_thread = VMThread::current();
@@ -780,6 +781,7 @@ void Profiler::switchLibraryTrap(bool enable) {
 }
 
 Error Profiler::installTraps(const char* begin, const char* end) {
+    printf("----------------profiler.cpp.installTraps-------------\n");
     const void* begin_addr = NULL;
     if (begin != NULL && (begin_addr = resolveSymbol(begin)) == NULL) {
         return Error("Begin address not found");
@@ -812,6 +814,7 @@ void Profiler::uninstallTraps() {
 }
 
 void Profiler::trapHandler(int signo, siginfo_t* siginfo, void* ucontext) {
+    printf("----------------profiler.cpp.trapHandler-------------\n");
     StackFrame frame(ucontext);
 
     if (_begin_trap.covers(frame.pc())) {
@@ -1006,6 +1009,7 @@ Engine* Profiler::activeEngine() {
 }
 
 Error Profiler::checkJvmCapabilities() {
+    printf("----------------profiler.cpp.checkJvmCapabilities-------------\n");
     if (VM::loaded()) {
         if (!VMStructs::hasJavaThreadId()) {
             return Error("Could not find Thread ID field. Unsupported JVM?");
@@ -1031,6 +1035,7 @@ Error Profiler::checkJvmCapabilities() {
 }
 
 Error Profiler::start(Arguments& args, bool reset) {
+    printf("----------------profiler.cpp.start-------------\n");
     MutexLocker ml(_state_lock);
     if (_state > IDLE) {
         return Error("Profiler already started");

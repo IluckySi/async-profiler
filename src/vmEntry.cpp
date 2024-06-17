@@ -84,7 +84,7 @@ bool VM::init(JavaVM* vm, bool attach) {
     printf("----------------vmEntry.cpp.init--------------&vm=%p, _jvmti=%p\n", &vm, &_jvmti); // &vm=0x732f4a82d8a8, _jvmti=0x732f48f1dcb8
 
     _vm = vm;
-    if (_vm->GetEnv((void**)&_jvmti, JVMTI_VERSION_1_0) != 0) { // TODO: Ilucky: _(void**)&_jvmti???
+    if (_vm->GetEnv((void**)&_jvmti, JVMTI_VERSION_1_0) != 0) { // TODO: Ilucky: _(void**)&_jvmti??? 判断是不是支持JVMTI.
         return false;
     }
 
@@ -132,7 +132,7 @@ bool VM::init(JavaVM* vm, bool attach) {
     }
     printf("----------------vmEntry.cpp.init--------------libjvm=%p\n", libjvm); // libjvm=0x5f815910a920
 
-    // TODO: Ilucky...dlsym...
+    // TODO: Ilucky...dlsym...???
     _asyncGetCallTrace = (AsyncGetCallTrace)dlsym(libjvm, "AsyncGetCallTrace");
     _getManagement = (JVM_GetManagement)dlsym(libjvm, "JVM_GetManagement");
     _totalMemory = (JVM_MemoryFunc)dlsym(libjvm, "JVM_TotalMemory");
@@ -141,7 +141,7 @@ bool VM::init(JavaVM* vm, bool attach) {
 
 
     Profiler* profiler = Profiler::instance();
-    profiler->updateSymbols(false); // TODO: Ilucky...
+    profiler->updateSymbols(false); // TODO: Ilucky...更新符号表.
 
     _openj9 = !is_hotspot && J9Ext::initialize(_jvmti, profiler->resolveSymbol("j9thread_self"));
     _can_sample_objects = !is_hotspot || hotspot_version() >= 11;
@@ -153,7 +153,7 @@ bool VM::init(JavaVM* vm, bool attach) {
         return false;
     }
 
-    VMStructs::init(lib); // TODO: Ilucky...
+    VMStructs::init(lib); // TODO: Ilucky...初始化VM结构.
     if (is_zero_vm) {
         lib->mark(isZeroInterpreterMethod, MARK_INTERPRETER);
     } else if (isOpenJ9()) {
@@ -198,7 +198,7 @@ bool VM::init(JavaVM* vm, bool attach) {
         _jvmti->AddCapabilities(&capabilities);
     }
 
-    jvmtiEventCallbacks callbacks = {0};
+    jvmtiEventCallbacks callbacks = {0};  // TODO: Ilucky...注册回调事件.
     callbacks.VMInit = VMInit;
     callbacks.VMDeath = VMDeath;
     callbacks.ClassLoad = ClassLoad;

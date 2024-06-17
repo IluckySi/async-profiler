@@ -125,7 +125,7 @@ uintptr_t VMStructs::readSymbol(const char* symbol_name) {
 
 // Run at agent load time
 void VMStructs::init(CodeCache* libjvm) {
-    printf("----------------vmStructs.cpp.init--------------libjvm->name()=%s\n", libjvm->name());
+    printf("----------------vmStructs.cpp.init--------------libjvm->name()=%s\n", libjvm->name()); // vmStructs.cpp.init--------------libjvm->name()=/usr/lib/jvm/java-21-openjdk-amd64/lib/server/libjvm.so
     _libjvm = libjvm;
 
     if (!VM::isOpenJ9() && !VM::isZing()) {
@@ -136,6 +136,7 @@ void VMStructs::init(CodeCache* libjvm) {
 
 // Run when VM is initialized and JNI is available
 void VMStructs::ready() {
+    printf("----------------vmStructs.cpp.ready--------------\n");
     resolveOffsets();
     patchSafeFetch();
 
@@ -145,7 +146,7 @@ void VMStructs::ready() {
 }
 
 void VMStructs::initOffsets() {
-    printf("----------------vmStructs.cpp.initOffsets--------------\n");
+    printf("----------------vmStructs.cpp.initOffsets--------------\n"); // vmStructs.cpp.initOffsets
     uintptr_t entry = readSymbol("gHotSpotVMStructs");
     uintptr_t stride = readSymbol("gHotSpotVMStructEntryArrayStride");
     uintptr_t type_offset = readSymbol("gHotSpotVMStructEntryTypeNameOffset");
@@ -153,14 +154,14 @@ void VMStructs::initOffsets() {
     uintptr_t offset_offset = readSymbol("gHotSpotVMStructEntryOffsetOffset");
     uintptr_t address_offset = readSymbol("gHotSpotVMStructEntryAddressOffset");
 
-    if (entry != 0 && stride != 0) {
+    if (entry != 0 && stride != 0) { // TODO: Ilucky...entry和stride的关系是什么?
         for (;; entry += stride) {
             const char* type = *(const char**)(entry + type_offset);
             const char* field = *(const char**)(entry + field_offset);
             if (type == NULL || field == NULL) {
                 break;
             }
-
+            printf("----------------vmStructs.cpp.initOffsets--------------type=%s\n",type);
             if (strcmp(type, "Klass") == 0) {
                 if (strcmp(field, "_name") == 0) {
                     _klass_name_offset = *(int*)(entry + offset_offset);
@@ -515,6 +516,7 @@ void VMStructs::resolveOffsets() {
 }
 
 void VMStructs::initJvmFunctions() {
+    printf("----------------vmStructs.cpp.initJvmFunctions-------------\n");
     _get_stack_trace = (GetStackTraceFunc)_libjvm->findSymbolByPrefix("_ZN8JvmtiEnv13GetStackTraceEP10JavaThreadiiP");
 
     if (VM::hotspot_version() == 8) {
@@ -556,6 +558,7 @@ void VMStructs::initTLS(void* vm_thread) {
 }
 
 void VMStructs::initThreadBridge(JNIEnv* env) {
+    printf("----------------vmStructs.cpp.initThreadBridge-------------\n");
     jthread thread;
     if (VM::jvmti()->GetCurrentThread(&thread) != 0) {
         return;
@@ -585,6 +588,7 @@ void VMStructs::initThreadBridge(JNIEnv* env) {
 }
 
 void VMStructs::initLogging(JNIEnv* env) {
+    printf("----------------vmStructs.cpp.initLogging-------------\n");
     // Workaround for JDK-8238460
     if (VM::hotspot_version() >= 15) {
         VMManagement* management = VM::management();
